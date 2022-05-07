@@ -26,7 +26,11 @@ FROM build-base AS mopidy-radionet
 
 RUN pip3 install --no-cache-dir --user Mopidy-RadioNet==0.2.2 &&\
       ls -al /root/.local/lib/python3.9/site-packages
+      
+FROM build-base AS mopidy-ytmusic
 
+RUN pip3 install --no-cache-dir --user Mopidy-YTMusic==0.3.5 &&\
+      ls -al /root/.local/lib/python3.9/site-packages
 
 FROM $BUILD_FROM AS run
 
@@ -41,6 +45,7 @@ RUN apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.14/
 COPY --from=mopidy-iris /root/.local/lib/python3.9/site-packages /usr/lib/python3.9/site-packages/
 COPY --from=mopidy-mpd /root/.local/lib/python3.9/site-packages /usr/lib/python3.9/site-packages/
 COPY --from=mopidy-radionet /root/.local/lib/python3.9/site-packages /usr/lib/python3.9/site-packages/
+COPY --from=mopidy-ytmusic /root/.local/lib/python3.9/site-packages /usr/lib/python3.9/site-packages/
 
 RUN echo "root ALL=NOPASSWD: /usr/lib/python3.9/site-packages/mopidy_iris/system.sh" >> /etc/sudoers
 
